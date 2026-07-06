@@ -1,0 +1,28 @@
+# init: fresh repo creates files; second run is idempotent; non-git dir refused.
+
+# A dir with no .git anywhere up the tree is refused.
+! exec quibble --dir nogit init
+stderr 'not inside a git work tree'
+! exists nogit/.quibble
+
+# A git work tree (marked by a .git entry) gets initialized.
+mkdir repo/.git
+exec quibble --dir repo init
+stdout 'initialized quibble'
+exists repo/.quibble/config.yml
+exists repo/.quibble/comments/.gitkeep
+exists repo/.quibble/AGENTS.md
+grep 'M6' repo/.quibble/AGENTS.md
+
+# Config carries the paper theme and distinct human/agent authors.
+grep 'name: paper' repo/.quibble/config.yml
+grep 'human:' repo/.quibble/config.yml
+grep 'agent:' repo/.quibble/config.yml
+
+# Second run is idempotent: reports already initialized, changes nothing.
+exec quibble --dir repo init
+stdout 'already initialized'
+! stdout 'initialized quibble in'
+
+-- nogit/keep.txt --
+placeholder so the directory exists

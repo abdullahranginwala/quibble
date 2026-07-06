@@ -1,0 +1,35 @@
+# doctor: a doc edit demotes an anchor to fuzzy (exit 2); --fix self-heals it.
+
+mkdir .git
+exec quibble init
+
+exec quibble comments add --doc docs/d.md --quote 'fox leaps over the lazy dog' -m 'anchor me'
+cp stdout add.out
+readfirst ID add.out qbl-[a-z2-7]+
+
+# Fresh anchor resolves exactly (exit 0).
+exec quibble doctor
+stdout 'exact'
+
+# Edit the doc so the exact text no longer matches: doctor reports fuzzy, exit 2.
+cp d_v2.md docs/d.md
+! exec quibble doctor
+stdout 'fuzzy'
+
+# --fix rewrites the fuzzy anchor; it still reports fuzzy this run but marks it fixed.
+! exec quibble doctor --fix
+stdout 'yes'
+
+# A subsequent run resolves exactly again (exit 0).
+exec quibble doctor
+stdout 'exact'
+
+-- docs/d.md --
+# Doc
+
+The quick brown fox leaps over the lazy dog today.
+
+-- d_v2.md --
+# Doc
+
+The quick brown fox leaps over the sleepy dog today.

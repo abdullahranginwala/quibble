@@ -1,0 +1,25 @@
+# build: one unreadable doc fails the build (exit != 0) but the rest still render.
+
+mkdir .git
+exec quibble init
+
+# Make one doc unreadable; build must render the other and name the failure.
+chmod 000 docs/bad.md
+! exec quibble build
+stdout 'wrote 1 doc\(s\)'
+stderr 'docs/bad.md'
+stderr 'failed'
+
+# The readable doc is present in the output; the failed one is absent.
+exists dist/docs--good.html
+! exists dist/docs--bad.html
+
+-- docs/good.md --
+# Good doc
+
+This one reads fine.
+
+-- docs/bad.md --
+# Bad doc
+
+This one will be made unreadable.

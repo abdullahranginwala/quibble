@@ -26,7 +26,13 @@ see them natively. See DESIGN.md in the quibble repository.`,
 	root.PersistentFlags().BoolVar(&flagJSON, "json", false, "machine-readable JSON output")
 	root.PersistentFlags().StringVar(&flagDir, "dir", ".", "project root to operate on")
 
-	root.AddCommand(newVersionCmd())
+	root.AddCommand(
+		newVersionCmd(),
+		newInitCmd(),
+		newBuildCmd(),
+		newCommentsCmd(),
+		newDoctorCmd(),
+	)
 	return root
 }
 
