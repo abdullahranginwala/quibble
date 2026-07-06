@@ -4,7 +4,7 @@
 
 Quibble renders your markdown into beautiful HTML and lets you comment on it Google-Docs-style — except the comments are files in your git repo. Agents (Claude Code, etc.) see open comments natively when they read the repo, address them, and reply; you review and resolve. Doc history is git history. No cloud account, no database, no daemon.
 
-> Status: **design phase**. Read [DESIGN.md](DESIGN.md) — the full architecture, comment model, anchoring strategy, and roadmap live there.
+> Status: **design complete, implementation starting**. [DESIGN.md](DESIGN.md) is the architecture spec; [plan/00-INDEX.md](plan/00-INDEX.md) is the full milestone-by-milestone implementation plan (an agent can be pointed at that file cold and build v0.1 end-to-end).
 
 ## The loop
 
