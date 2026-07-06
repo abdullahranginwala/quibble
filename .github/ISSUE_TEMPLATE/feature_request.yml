@@ -1,0 +1,24 @@
+name: Feature request
+description: Propose an improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the workflow gap, not just the feature.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: nongoals
+    attributes:
+      label: Design check
+      options:
+        - label: I've read DESIGN.md §13 and this doesn't conflict with the non-goals (no doc mutation, no WYSIWYG, no shared hosted backend).
+          required: true

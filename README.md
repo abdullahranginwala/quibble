@@ -1,5 +1,10 @@
 # quibble
 
+[![ci](https://github.com/abdullahranginwala/quibble/actions/workflows/ci.yml/badge.svg)](https://github.com/abdullahranginwala/quibble/actions/workflows/ci.yml)
+[![release](https://img.shields.io/github/v/release/abdullahranginwala/quibble)](https://github.com/abdullahranginwala/quibble/releases)
+[![go reference](https://pkg.go.dev/badge/github.com/abdullahranginwala/quibble.svg)](https://pkg.go.dev/github.com/abdullahranginwala/quibble)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 **Review-grade markdown docs for humans and AI agents.**
 
 Quibble renders your markdown into beautiful HTML and lets you comment on it Google-Docs-style — except the comments are files in your git repo. Agents (Claude Code, etc.) see open comments natively when they read the repo, address them, and reply; you review and resolve. Doc history is git history. No cloud account, no database, no daemon.
@@ -12,6 +17,8 @@ This repo dogfoods itself: run `quibble serve` here and you'll find real review 
 go install github.com/abdullahranginwala/quibble/cmd/quibble@latest
 ```
 
+Or grab a prebuilt binary for macOS/Linux/Windows from the
+[releases page](https://github.com/abdullahranginwala/quibble/releases).
 (Homebrew formula: planned.)
 
 ## 60-second quickstart
