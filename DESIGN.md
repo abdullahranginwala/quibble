@@ -48,6 +48,8 @@ Why this wins for the primary use case (you + agents in a repo):
 
 Resolved threads **move** to `_resolved/` rather than getting a status flag in place. Rationale: an agent that lists `.quibble/comments/<doc>/` sees only actionable threads without any filtering logic, and the "most up-to-date view" the user asked for stays uncluttered. The move is a git-tracked rename, so identity and history are preserved, and the rendered HTML links each doc to its resolved archive.
 
+> **Known caveat (accepted, not a bug):** the doc-slug used for the directory name is deliberately non-injective. Slugging drops the extension and replaces `/` with `--`, so a filename that already contains `--` can collide with a nested path — `docs/a--b.md` and `docs/a/b.md` both slug to `a--b`. The two docs' threads then share one comments directory but stay distinct by thread ID, and the frontmatter `doc:` field — never the directory name — is authoritative for `quibble comments list --doc`, so no behavior is actually ambiguous. Same input always yields the same slug; there is no de-dup suffixing, and `doctor` collision detection is not planned — this is accepted as-is rather than treated as a defect. Tracked from thread `qbl-t6yf5c`; see `plan/DECISIONS.md` M3.
+
 ## 4. Comment data model
 
 One markdown file per thread, YAML frontmatter + body, replies appended as delimited sections. Human-readable, agent-readable, diff-friendly.
@@ -141,6 +143,8 @@ my-theme/
 - **paper** *(default)* — quiet, editorial, serif headings, generous whitespace; optimized for long-form RFC reading.
 - **ink** — dense and technical: sans everywhere, tighter type scale, sharper contrast; for runbooks and reference docs.
 - **terminal** — mono-first, dark-first, feels like well-typeset man pages; for the CLI-native crowd.
+
+> **v0.2 build order (decided):** ink ships before terminal. Runbooks and reference docs are the bigger second audience — on-call runbooks, RFC appendices, decision logs — versus the smaller CLI-native crowd terminal targets, so ink's readers get served sooner. Ink's tighter type scale and sharper contrast also stress the token contract harder than paper's generous whitespace does, so building it first surfaces token-contract gaps before terminal (an even denser, dark-first layout) has to rely on the same contract. Tracked from thread `qbl-aujm4a`.
 
 **Library API:** `render.Options{Theme: render.ThemePaper}` for built-ins, `render.ThemeFromFS(fsys)` for anything implementing the contract — so `pkg/render` importers get the same extensibility as CLI users. Resolution order: built-in name → path → error listing available themes.
 
