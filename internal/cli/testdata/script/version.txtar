@@ -1,0 +1,8 @@
+# `quibble version` exits 0 and prints a version string.
+exec quibble version
+stdout 'quibble dev \(unknown\)'
+
+# Unknown commands exit 1 with a helpful error and no panic.
+! exec quibble nonsense
+stderr 'unknown command'
+! stderr 'panic'
