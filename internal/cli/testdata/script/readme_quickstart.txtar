@@ -1,0 +1,40 @@
+# Row 4 (M6): the README quickstart commands, run verbatim (keeps the
+# quickstart honest). `quibble serve` is the one line not exercised end-to-end
+# here (long-running); it gets a flag-parse smoke via --help instead.
+mkdir .git
+mkdir docs
+cp plan.md docs/plan.md
+
+exec quibble init
+exists .quibble/config.yml
+exists .quibble/AGENTS.md
+
+exec quibble serve --help
+stdout 'port'
+
+# A human comments (the UI's file-write path is CLI-equivalent here).
+exec quibble comments add --doc docs/plan.md --quote 'the rollout plan' -m 'Clarify timing?' --author human
+cp stdout id.txt
+readfirst ID id.txt 'qbl-[a-z2-7]{6}'
+
+# README agent-side commands, verbatim.
+env QUIBBLE_AUTHOR=agent
+exec quibble comments list --open --json
+stdout '"status": "open"'
+exec quibble comments reply $ID -m 'Fixed in a1b2c3d; updated §4.2.'
+exec quibble comments address $ID
+
+# And the human resolves.
+env QUIBBLE_AUTHOR=
+exec quibble comments resolve $ID --author human
+exec quibble comments list --resolved
+stdout 'resolved'
+
+exec quibble build
+exists dist/index.html
+exists dist/docs--plan.html
+
+-- plan.md --
+# Plan
+
+This section describes the rollout plan for the feature.

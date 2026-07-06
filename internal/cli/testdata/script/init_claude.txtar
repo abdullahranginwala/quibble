@@ -1,0 +1,18 @@
+# Row 2 (M6): init --claude installs the skill only when .claude/ exists.
+mkdir .git
+mkdir docs
+
+# Without .claude/: skipped with a message, no dir created.
+exec quibble init --claude
+stdout 'skipping Claude skill install'
+! exists .claude/skills/quibble/SKILL.md
+
+# With .claude/ present, re-running init --claude installs on the
+# already-initialized path too.
+mkdir .claude
+exec quibble init --claude
+stdout 'already initialized'
+stdout 'installed Claude Code skill'
+exists .claude/skills/quibble/SKILL.md
+grep 'name: quibble' .claude/skills/quibble/SKILL.md
+grep 'Never run `quibble comments resolve`' .claude/skills/quibble/SKILL.md

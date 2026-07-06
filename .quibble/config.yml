@@ -1,0 +1,7 @@
+docs: ["DESIGN.md", "README.md", "plan/**/*.md", "docs/**/*.md"]
+theme:
+  name: paper
+  overrides: {}
+authors:
+  human: abdullah
+  agent: claude

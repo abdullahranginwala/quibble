@@ -12,7 +12,7 @@ stdout 'initialized quibble'
 exists repo/.quibble/config.yml
 exists repo/.quibble/comments/.gitkeep
 exists repo/.quibble/AGENTS.md
-grep 'M6' repo/.quibble/AGENTS.md
+grep 'Never resolve' repo/.quibble/AGENTS.md
 
 # Config carries the paper theme and distinct human/agent authors.
 grep 'name: paper' repo/.quibble/config.yml

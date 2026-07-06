@@ -1,0 +1,42 @@
+# Row 3 (M6): a simulated agent session — list, reply, address all work under
+# QUIBBLE_AUTHOR=claude; resolve is refused with the policy message.
+mkdir .git
+exec quibble init
+
+cp config.yml .quibble/config.yml
+cp plan.md docs/plan.md
+
+exec quibble comments add --doc docs/plan.md --quote 'keyed by attempt count' -m 'Key by booking id instead?' --author abdullah
+cp stdout id.txt
+readfirst ID id.txt 'qbl-[a-z2-7]{6}'
+
+env QUIBBLE_AUTHOR=claude
+
+exec quibble comments list --open --json
+stdout '"status": "open"'
+
+exec quibble comments reply $ID -m 'Done in a1b2c3d.'
+exec quibble comments address $ID
+
+exec quibble comments show $ID
+stdout 'addressed'
+
+! exec quibble comments resolve $ID
+stderr 'agents address; humans resolve'
+
+exec quibble comments show $ID
+stdout 'addressed'
+
+-- config.yml --
+docs: ["docs/**/*.md"]
+theme:
+  name: paper
+  overrides: {}
+authors:
+  human: abdullah
+  agent: claude
+-- docs/.gitkeep --
+-- plan.md --
+# Plan
+
+Charges are keyed by attempt count today.
