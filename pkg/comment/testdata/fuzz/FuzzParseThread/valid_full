@@ -1,0 +1,2 @@
+go test fuzz v1
+[]byte("---\nid: qbl-7f3k2a\ndoc: docs/deployment-plan.md\nstatus: resolved\ncreated: 2026-07-06T14:31:00+05:30\nauthor: abdullah\nanchor:\n  exact: \"the retry loop\"\n  prefix: \"failed, \"\n  suffix: \". window\"\n  heading: [\"Rollback plan\", \"Failure modes\"]\n  position: 14382\nresolved_by: abdullah\nresolved_at: 2026-07-06T18:00:00+05:30\n---\n\nBody question?\n\n<!-- reply author=claude time=2026-07-06T15:02:00+05:30 -->\n\nAgreed.\n")
