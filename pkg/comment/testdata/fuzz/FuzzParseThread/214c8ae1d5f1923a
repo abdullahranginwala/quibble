@@ -1,0 +1,2 @@
+go test fuzz v1
+[]byte("---\nA: \nB: 0\nC: A\nanchor:\n  A:\n  B:\n  C:\n  heading: [\"00\",\"00\"]\nX: 0\nresolved_by: A\nresolved_at: 0000-1-10\n---\n\n\n <!-- reply author=00 time=000000000000000000000 -->")
