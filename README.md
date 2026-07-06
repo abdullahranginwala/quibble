@@ -18,7 +18,7 @@ Comments live in `.quibble/comments/` as one markdown file per thread, anchored 
 
 ## What's inside
 
-- `pkg/render` — importable Go library: markdown → clean, readable static HTML (goldmark + chroma, one great theme, light/dark, TOC).
+- `pkg/render` — importable Go library: markdown → clean, readable static HTML (goldmark + chroma, light/dark, TOC). Built-in themes (`paper`, `ink`, `terminal`) on a design-token contract; bring your own theme as a directory that fills the same contract.
 - `quibble` CLI — `build`, `serve` (local review app), `comments` (full lifecycle), `doctor` (anchor health).
 - Optional publish adapters (Cloudflare, AWS — self-hosted on *your* account) for sharing docs beyond the repo. Planned, see roadmap.
 

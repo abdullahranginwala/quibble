@@ -95,17 +95,48 @@ open ──(agent replies + does the work)──▶ addressed ──(human appro
 - **Parser:** [goldmark](https://github.com/yuin/goldmark) — CommonMark + GFM (tables, task lists, strikethrough, autolinks), footnotes, extensible AST for our needs.
 - **Syntax highlighting:** chroma, server-side (no JS highlighter).
 - **Diagrams:** mermaid via client-side script, opt-in per project config.
-- **Theme:** one built-in theme executed extremely well, not a theme zoo. Clean type scale, measure-limited prose (~70ch), sticky table-of-contents sidebar, light/dark via `prefers-color-scheme` + toggle, anchored headings, copy buttons on code blocks. Comment highlights render as subtle marks with margin bubbles (Google Docs-style) that expand to threads.
+- **Themes:** 2–3 built-in themes, user-extensible (see §5.1). Every theme gets the same structural features: measure-limited prose, sticky table-of-contents sidebar, light/dark via `prefers-color-scheme` + toggle, anchored headings, copy buttons on code blocks. Comment highlights render as subtle marks with margin bubbles (Google Docs-style) that expand to threads.
 - **Stable block fingerprints:** at render time each block gets `data-qbl` = hash(normalized text) + occurrence index. These are *hints* for anchoring — never written back into the markdown source. **The user's markdown is never mutated.**
 - **Output:** self-contained static site (`quibble build -o dist/`), assets inlined or copied — deployable to any static host with zero runtime.
 - **Library API sketch:**
 
 ```go
-site, err := render.New(render.Options{Theme: render.Default, TOC: true}).
+site, err := render.New(render.Options{Theme: render.ThemePaper, TOC: true}).
     RenderDir(os.DirFS("docs"))
 // or single-doc:
 html, err := render.Doc(src, opts)
 ```
+
+### 5.1 Theme system
+
+The hard constraint shaping the design: **the comment layer must work on every theme**. Highlights, margin bubbles, and thread UI are owned by quibble, not by themes — so a theme is not arbitrary CSS, it's a package that fills a defined contract.
+
+**What a theme is:** a directory (built-ins embedded via `go:embed`, custom ones on disk):
+
+```
+my-theme/
+  theme.yml        # name, author, light/dark support, token values
+  tokens.css       # REQUIRED: the design-token contract (CSS custom properties)
+  theme.css        # the theme's own styling, built on those tokens
+  layout.html      # OPTIONAL: Go html/template override of page chrome
+  assets/          # OPTIONAL: fonts, extra JS
+```
+
+**The contract is the token set.** `tokens.css` must define the full quibble token vocabulary — `--qbl-bg`, `--qbl-fg`, `--qbl-accent`, `--qbl-prose-max`, `--qbl-font-body`, `--qbl-font-mono`, `--qbl-radius`, `--qbl-comment-*`, etc. — for both light and dark. The comment UI and structural chrome (TOC, code copy buttons, orphan panel) style themselves *exclusively* from these tokens, so they automatically match any theme. `quibble doctor` validates a custom theme against the token schema and fails loudly on missing tokens.
+
+**Three escalating levels of customization** — most users never leave level 1:
+
+1. **Pick a built-in:** `theme: ink` in `.quibble/config.yml`.
+2. **Override tokens inline:** a `theme.overrides:` map in config (`--qbl-accent: "#7c3aed"`, a different font stack) — rebrand without writing a theme.
+3. **Full custom theme:** `theme: ./themes/acme/` pointing at a theme directory; template override included. Shareable by copying the directory or referencing a git repo.
+
+**Built-ins (ship with v0.1–v0.2):**
+
+- **paper** *(default)* — quiet, editorial, serif headings, generous whitespace; optimized for long-form RFC reading.
+- **ink** — dense and technical: sans everywhere, tighter type scale, sharper contrast; for runbooks and reference docs.
+- **terminal** — mono-first, dark-first, feels like well-typeset man pages; for the CLI-native crowd.
+
+**Library API:** `render.Options{Theme: render.ThemePaper}` for built-ins, `render.ThemeFromFS(fsys)` for anything implementing the contract — so `pkg/render` importers get the same extensibility as CLI users. Resolution order: built-in name → path → error listing available themes.
 
 ## 6. Anchoring — the nuanced part
 
@@ -193,8 +224,8 @@ quibble/
 
 ## 12. Roadmap
 
-- **v0.1 — the loop works locally.** `init`, `build`, `serve` with commenting UI, fs store, full `comments` CLI, agent skill. Dogfood on this repo's own docs.
-- **v0.2 — anchors that survive.** Fuzzy re-anchoring, orphan panel, `doctor --fix`, theme polish (print styles, mermaid, search).
+- **v0.1 — the loop works locally.** `init`, `build`, `serve` with commenting UI, fs store, full `comments` CLI, agent skill, **paper** theme on the token contract. Dogfood on this repo's own docs.
+- **v0.2 — anchors that survive, themes open up.** Fuzzy re-anchoring, orphan panel, `doctor --fix`; **ink** + **terminal** themes, token overrides, custom theme dirs + `ThemeFromFS`; print styles, mermaid, search.
 - **v0.3 — sharing.** `Publisher` interface + Cloudflare adapter (Pages + Worker + D1), viewer identity for shared review.
 - **v0.4 — second adapter proves the interface.** AWS publisher, `sync` conflict handling, GitHub PR integration (open threads ⇄ PR comments).
 
