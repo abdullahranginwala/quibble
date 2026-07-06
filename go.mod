@@ -4,6 +4,7 @@ go 1.25
 
 require (
 	github.com/alecthomas/chroma/v2 v2.27.0
+	github.com/fsnotify/fsnotify v1.10.1
 	github.com/rogpeppe/go-internal v1.15.0
 	github.com/spf13/cobra v1.10.2
 	github.com/yuin/goldmark v1.8.2

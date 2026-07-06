@@ -30,6 +30,7 @@ see them natively. See DESIGN.md in the quibble repository.`,
 		newVersionCmd(),
 		newInitCmd(),
 		newBuildCmd(),
+		newServeCmd(),
 		newCommentsCmd(),
 		newDoctorCmd(),
 	)

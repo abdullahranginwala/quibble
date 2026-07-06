@@ -1,0 +1,255 @@
+/*
+ * quibble comment-layer UI — styled ONLY through the --qbl-* token contract, so
+ * it inherits any theme automatically (DESIGN.md §5.1). No hard-coded colors.
+ */
+
+/* Leave room in the right gutter for margin bubbles. */
+.qbl-main {
+  position: relative;
+  padding-right: 3.5rem;
+}
+
+/* --- highlights --- */
+.qbl-mark {
+  background: var(--qbl-mark-bg);
+  border-radius: 2px;
+  padding: 0.05em 0;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+.qbl-mark:hover,
+.qbl-mark.qbl-mark-active {
+  background: var(--qbl-mark-bg-active);
+}
+.qbl-mark-fuzzy {
+  border-bottom: 1px dashed var(--qbl-accent);
+}
+
+/* --- margin bubbles (gutter indicators) --- */
+.qbl-bubbles {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2.75rem;
+  pointer-events: none;
+}
+.qbl-bubble {
+  position: absolute;
+  right: 0.25rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--qbl-comment-bg);
+  border: 1px solid var(--qbl-comment-border);
+  color: var(--qbl-fg-muted);
+  font: 600 0.7rem/1 var(--qbl-font-body);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+.qbl-bubble[data-status="addressed"] {
+  border-color: var(--qbl-accent);
+  color: var(--qbl-accent);
+}
+.qbl-bubble:hover {
+  border-color: var(--qbl-accent);
+}
+
+/* --- floating "comment" button --- */
+.qbl-float {
+  position: absolute;
+  z-index: 40;
+  background: var(--qbl-accent);
+  color: var(--qbl-bg);
+  border: none;
+  border-radius: var(--qbl-radius);
+  padding: 0.35rem 0.7rem;
+  font: 600 0.8rem/1 var(--qbl-font-body);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* --- slide-over thread panel --- */
+.qbl-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: min(24rem, 92vw);
+  background: var(--qbl-comment-bg);
+  border-left: 1px solid var(--qbl-comment-border);
+  box-shadow: -4px 0 18px rgba(0, 0, 0, 0.16);
+  transform: translateX(100%);
+  transition: transform 160ms ease;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  color: var(--qbl-fg);
+  font-family: var(--qbl-font-body);
+}
+.qbl-panel.qbl-open {
+  transform: translateX(0);
+}
+.qbl-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--qbl-comment-border);
+}
+.qbl-panel-title {
+  font-weight: 700;
+}
+.qbl-panel-close {
+  background: none;
+  border: none;
+  color: var(--qbl-fg-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.qbl-panel-body {
+  padding: 1rem;
+  overflow-y: auto;
+  flex: 1;
+}
+.qbl-quote {
+  border-left: 3px solid var(--qbl-accent);
+  padding: 0.25rem 0 0.25rem 0.6rem;
+  margin-bottom: 0.8rem;
+  color: var(--qbl-fg-muted);
+  font-style: italic;
+}
+.qbl-msg {
+  border: 1px solid var(--qbl-comment-border);
+  border-radius: var(--qbl-radius);
+  padding: 0.55rem 0.7rem;
+  margin-bottom: 0.6rem;
+  background: var(--qbl-bg);
+}
+.qbl-msg-meta {
+  font-size: 0.72rem;
+  color: var(--qbl-fg-muted);
+  margin-bottom: 0.25rem;
+}
+.qbl-msg-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.qbl-reply-box {
+  width: 100%;
+  min-height: 4rem;
+  box-sizing: border-box;
+  border: 1px solid var(--qbl-comment-border);
+  border-radius: var(--qbl-radius);
+  background: var(--qbl-bg);
+  color: var(--qbl-fg);
+  font: inherit;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  resize: vertical;
+}
+.qbl-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding: 0.8rem 1rem;
+  border-top: 1px solid var(--qbl-comment-border);
+}
+.qbl-btn {
+  background: var(--qbl-bg-raised);
+  color: var(--qbl-fg);
+  border: 1px solid var(--qbl-comment-border);
+  border-radius: var(--qbl-radius);
+  padding: 0.35rem 0.7rem;
+  font: 600 0.8rem/1 var(--qbl-font-body);
+  cursor: pointer;
+}
+.qbl-btn-primary {
+  background: var(--qbl-accent);
+  color: var(--qbl-bg);
+  border-color: var(--qbl-accent);
+}
+.qbl-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.qbl-status-tag {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--qbl-fg-muted);
+}
+
+/* --- orphan panel --- */
+.qbl-orphans {
+  border: 1px solid var(--qbl-comment-border);
+  border-radius: var(--qbl-radius);
+  background: var(--qbl-bg-raised);
+  padding: 0.7rem 0.9rem;
+  margin: 0 0 1.5rem 0;
+}
+.qbl-orphans-title {
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+.qbl-orphan-item {
+  cursor: pointer;
+  padding: 0.3rem 0;
+  border-top: 1px solid var(--qbl-comment-border);
+  color: var(--qbl-fg-muted);
+}
+
+/* --- header counts + resolved-view link --- */
+.qbl-counts {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-left: 1rem;
+  font: 0.78rem/1 var(--qbl-font-body);
+}
+.qbl-badge {
+  border: 1px solid var(--qbl-comment-border);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  color: var(--qbl-fg-muted);
+}
+.qbl-counts a {
+  color: var(--qbl-accent);
+}
+
+/* --- doc-updated toast --- */
+.qbl-toast {
+  position: fixed;
+  bottom: 1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--qbl-comment-bg);
+  border: 1px solid var(--qbl-comment-border);
+  color: var(--qbl-fg);
+  border-radius: var(--qbl-radius);
+  padding: 0.6rem 1rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  font: 0.85rem/1.2 var(--qbl-font-body);
+  z-index: 60;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+.qbl-toast button {
+  background: var(--qbl-accent);
+  color: var(--qbl-bg);
+  border: none;
+  border-radius: var(--qbl-radius);
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  font: 600 0.8rem/1 var(--qbl-font-body);
+}
+.qbl-read-only {
+  color: var(--qbl-fg-muted);
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+}

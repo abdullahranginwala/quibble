@@ -49,6 +49,13 @@ func matchGlob(glob, name string) (bool, error) {
 	return matchSegs(strings.Split(glob, "/"), strings.Split(name, "/"))
 }
 
+// MatchGlob reports whether a slash-separated path matches a single glob whose
+// segments may be `**` (any number of segments). Exported for the serve watcher,
+// which classifies changed paths against the configured doc globs.
+func MatchGlob(glob, name string) (bool, error) {
+	return matchGlob(glob, name)
+}
+
 func matchSegs(pattern, segs []string) (bool, error) {
 	for len(pattern) > 0 {
 		if pattern[0] == "**" {

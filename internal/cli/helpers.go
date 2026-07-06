@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/abdullahranginwala/quibble/internal/config"
+	"github.com/abdullahranginwala/quibble/internal/docbridge"
 	"github.com/abdullahranginwala/quibble/pkg/comment"
 	"github.com/abdullahranginwala/quibble/pkg/render"
 	"github.com/abdullahranginwala/quibble/pkg/store"
@@ -98,28 +99,20 @@ type anchorContext struct {
 }
 
 // docAnchorContext renders src (the raw markdown of relPath) and bridges the
-// render types into the pkg/comment types used for anchoring. The bridge lives
-// here in internal/cli (see plan/DECISIONS.md).
+// render types into the pkg/comment types used for anchoring, via the shared
+// internal/docbridge package (see plan/DECISIONS.md).
 func docAnchorContext(src []byte, relPath string) (anchorContext, error) {
 	r, err := render.New(render.Options{Theme: render.Paper()})
 	if err != nil {
 		return anchorContext{}, fmt.Errorf("preparing renderer: %w", err)
 	}
-	doc, err := r.RenderDoc(src, relPath)
+	rd, err := docbridge.Render(r, src, relPath)
 	if err != nil {
 		return anchorContext{}, err
 	}
-	headings := make([]comment.Heading, len(doc.Outline))
-	for i, h := range doc.Outline {
-		headings[i] = comment.Heading{Level: h.Level, Text: h.Text, Anchor: h.Anchor}
-	}
-	blocks := make([]comment.Block, len(doc.Blocks))
-	for i, b := range doc.Blocks {
-		blocks[i] = comment.Block{ID: b.ID, Text: b.Text, Start: b.Start, End: b.End}
-	}
 	return anchorContext{
-		text:     doc.Text,
-		sections: comment.Sectionize(headings, doc.Text, blocks),
+		text:     rd.Text,
+		sections: rd.Sections,
 	}, nil
 }
 
