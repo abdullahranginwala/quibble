@@ -171,20 +171,37 @@ There is deliberately **no daemon, no account, no state outside the repo**.
 
 The human then opens `quibble serve`, reviews everything in `addressed`, and resolves or reopens. This is the full loop the tool exists for.
 
-## 9. Sharing & cloud (v0.3+, adapter-based)
+## 9. The cloud layer — first-class, never a prerequisite
 
-For sharing rendered docs with people who don't have the repo, Quibble adds a `Publisher` interface:
+Decision (settled): quibble is **local-first with a first-class optional cloud layer**, not cloud-native-only. Cloud-only would break the three properties that differentiate quibble: agents reading comments natively from the repo, zero-setup onboarding (`brew install quibble && quibble serve`), and git as the sole source of truth. The cloud layer exists for one job: sharing docs with people who don't have the repo.
+
+### 9.1 Account-level vs project-level
+
+- `quibble cloud setup --provider cloudflare` — **once per machine**. Provisions the comments API + storage on the *user's own* provider account (self-hosted, no shared backend, ever). Credentials and an agent API key land in `~/.config/quibble/` (0600).
+- `quibble publish` — **per project, instant afterwards**. Renders and uploads the site + current comment state. Each project picks its provider in `.quibble/config.yml` — project A on Cloudflare, project B on AWS, same commands.
+- `quibble sync pull` — merges remote comments back into `.quibble/comments/` as ordinary thread files. **Git remains truth; the cloud copy is a projection.** Tearing down the cloud loses nothing.
+
+### 9.2 Provider extensibility
 
 ```go
-type CommentStore interface { List, Get, Create, Reply, SetStatus, ... }
-type Publisher interface { PublishSite, PullComments, PushComments }
+type Publisher interface {
+    Setup(ctx context.Context, cfg ProviderConfig) (Deployment, error) // account-level provision
+    PublishSite(ctx context.Context, site *render.Site) (URL, error)
+    PushComments(ctx context.Context, threads []*comment.Thread) error
+    PullComments(ctx context.Context, since time.Time) ([]*comment.Thread, error)
+    Teardown(ctx context.Context) error
+}
 ```
 
-- `quibble publish --to cloudflare` → static site to Pages/Workers Sites, comments API on a Worker + D1, **on the user's own account** (self-hosted, no shared backend).
-- `quibble publish --to aws` → S3/CloudFront + Lambda + DynamoDB.
-- `quibble sync pull` merges remote comments back into `.quibble/comments/` — **git remains the source of truth**; the cloud copy is a projection.
+The fs `CommentStore` is the reference implementation; every provider adapter (Cloudflare first: Pages + Worker + D1; AWS second: S3/CloudFront + Lambda + DynamoDB) must pass the same conformance suite in CI. Adding a provider = implementing one interface, not re-architecting.
 
-Provider independence is enforced by making the fs store the reference `CommentStore` and CI-testing every adapter against the same conformance suite.
+### 9.3 Auth: capability links, no accounts, ever
+
+- **Reading:** publishing creates an unguessable URL (secret-gist model). Possession = read access.
+- **Commenting:** `quibble share docs/plan.md --with sam` mints a URL with an embedded signed token identifying "sam". Comments via that link are attributed to him — no signup, no password, no OAuth. The link *is* the identity.
+- **Revocation:** `quibble share revoke sam` kills the token; the doc URL itself can be rotated.
+- **CLI/agents** authenticate to the user's cloud API with the API key from `cloud setup`.
+- SSO/OAuth, if ever, is a pluggable auth provider for orgs — never the default experience.
 
 ## 10. CLI surface (v0.1)
 
