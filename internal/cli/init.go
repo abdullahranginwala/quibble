@@ -8,11 +8,12 @@ import (
 	"strings"
 
 	"github.com/abdullahranginwala/quibble/internal/config"
+	"github.com/abdullahranginwala/quibble/skill"
 	"github.com/spf13/cobra"
 )
 
 //go:embed templates/AGENTS.md
-var agentsPlaceholder []byte
+var agentsContract []byte
 
 // claudeMarker guards the CLAUDE.md pointer block against double-appending.
 const claudeMarker = "<!-- quibble -->"
@@ -25,7 +26,8 @@ This repo uses quibble for doc review — open comment threads live in
 `
 
 func newInitCmd() *cobra.Command {
-	return &cobra.Command{
+	var claude bool
+	cmd := &cobra.Command{
 		Use:   "init",
 		Short: "Initialize quibble in the current repository",
 		Long: `Creates .quibble/ with a default config, an empty comments store, and the
@@ -37,12 +39,14 @@ Refuses to run outside a git work tree, since comments live in git.`,
 			if err != nil {
 				return withExitCode(1, err)
 			}
-			return runInit(cmd, root)
+			return runInit(cmd, root, claude)
 		},
 	}
+	cmd.Flags().BoolVar(&claude, "claude", false, "also install the Claude Code skill into .claude/skills/quibble/ (when .claude/ exists)")
+	return cmd
 }
 
-func runInit(cmd *cobra.Command, root string) error {
+func runInit(cmd *cobra.Command, root string, claude bool) error {
 	if !inGitWorkTree(root) {
 		return withExitCode(1, fmt.Errorf(
 			"%s is not inside a git work tree; run `git init` first (quibble stores comments in git)", root))
@@ -52,6 +56,9 @@ func runInit(cmd *cobra.Command, root string) error {
 	cfgPath := config.Path(root)
 	if fileExists(cfgPath) {
 		fmt.Fprintln(cmd.OutOrStdout(), "already initialized")
+		if claude {
+			return installClaudeSkill(cmd, root)
+		}
 		return nil
 	}
 
@@ -69,7 +76,7 @@ func runInit(cmd *cobra.Command, root string) error {
 	if err := os.WriteFile(filepath.Join(qdir, "comments", ".gitkeep"), nil, 0o644); err != nil {
 		return withExitCode(1, fmt.Errorf("writing .gitkeep: %w", err))
 	}
-	if err := os.WriteFile(filepath.Join(qdir, "AGENTS.md"), agentsPlaceholder, 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(qdir, "AGENTS.md"), agentsContract, 0o644); err != nil {
 		return withExitCode(1, fmt.Errorf("writing AGENTS.md: %w", err))
 	}
 
@@ -83,6 +90,30 @@ func runInit(cmd *cobra.Command, root string) error {
 	if appended {
 		fmt.Fprintln(out, "appended a quibble pointer to CLAUDE.md")
 	}
+	if claude {
+		return installClaudeSkill(cmd, root)
+	}
+	return nil
+}
+
+// installClaudeSkill copies the embedded Claude Code skill (skill/SKILL.md,
+// embedded via the skill package) into .claude/skills/quibble/ when the repo
+// already uses Claude (.claude/ exists); otherwise it skips with a message
+// rather than creating .claude/ uninvited.
+func installClaudeSkill(cmd *cobra.Command, root string) error {
+	out := cmd.OutOrStdout()
+	if fi, err := os.Stat(filepath.Join(root, ".claude")); err != nil || !fi.IsDir() {
+		fmt.Fprintln(out, "no .claude/ directory here — skipping Claude skill install")
+		return nil
+	}
+	dir := filepath.Join(root, ".claude", "skills", "quibble")
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return withExitCode(1, fmt.Errorf("creating %s: %w", dir, err))
+	}
+	if err := os.WriteFile(filepath.Join(dir, "SKILL.md"), skill.Content, 0o644); err != nil {
+		return withExitCode(1, fmt.Errorf("writing skill: %w", err))
+	}
+	fmt.Fprintf(out, "installed Claude Code skill at %s\n", filepath.Join(dir, "SKILL.md"))
 	return nil
 }
 

@@ -52,6 +52,12 @@ Resolved threads **move** to `_resolved/` rather than getting a status flag in p
 
 One markdown file per thread, YAML frontmatter + body, replies appended as delimited sections. Human-readable, agent-readable, diff-friendly.
 
+> Known parsing limitation (accepted for v0.1): reply markers are matched at
+> line start anywhere after the frontmatter, so a marker-lookalike line inside
+> a thread body — e.g. quoted in a code fence — is parsed as a real reply
+> boundary. In practice bodies quote doc text, not quibble markers; fence-aware
+> parsing is a v0.2 candidate. Tracked from thread `qbl-gnw3hq`.
+
 ```markdown
 ---
 id: qbl-7f3k2a
