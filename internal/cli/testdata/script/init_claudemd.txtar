@@ -1,0 +1,22 @@
+# init: appends the CLAUDE.md pointer exactly once, never twice.
+
+mkdir .git
+
+# CLAUDE.md exists before init; init appends the pointer block once.
+exec quibble init
+stdout 'appended a quibble pointer to CLAUDE.md'
+grep '<!-- quibble -->' CLAUDE.md
+grep 'quibble for doc review' CLAUDE.md
+
+# Exactly one marker in the file.
+grep -count=1 '<!-- quibble -->' CLAUDE.md
+
+# Re-running init is idempotent (already initialized) and does not append again.
+exec quibble init
+stdout 'already initialized'
+grep -count=1 '<!-- quibble -->' CLAUDE.md
+
+-- CLAUDE.md --
+# Project instructions
+
+Existing content the user wrote.

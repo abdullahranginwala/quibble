@@ -1,0 +1,34 @@
+# build: dist/ gets an index and one page per doc; zero-config mode works too.
+
+mkdir .git
+exec quibble init
+
+# Render the configured docs into dist/.
+exec quibble build
+stdout 'wrote 2 doc\(s\)'
+exists dist/index.html
+exists dist/docs--plan.html
+exists dist/guide.html
+grep 'docs--plan.html' dist/index.html
+
+# Custom output dir via -o.
+exec quibble build -o site
+exists site/index.html
+exists site/docs--plan.html
+
+# Zero-config mode: a bare directory with no .quibble still renders **/*.md.
+mkdir bare
+cp guide.md bare/readme.md
+exec quibble --dir bare build
+exists bare/dist/readme.html
+exists bare/dist/index.html
+
+-- docs/plan.md --
+# Deployment plan
+
+The retry loop re-attempts every thirty minutes.
+
+-- guide.md --
+# Guide
+
+A short guide document.

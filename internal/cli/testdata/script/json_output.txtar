@@ -1,0 +1,29 @@
+# --json: list and show emit stable, greppable field names.
+
+mkdir .git
+exec quibble init
+
+exec quibble comments add --doc docs/d.md --quote 'stable field names' -m 'json please'
+cp stdout add.out
+readfirst ID add.out qbl-[a-z2-7]+
+
+# list --json emits an array with the frozen frontmatter keys.
+exec quibble --json comments list
+stdout '"id":'
+stdout '"status":'
+stdout '"doc":'
+stdout '"anchor":'
+stdout '"created":'
+stdout $ID
+
+# show --json round-trips the same keys for a single object.
+exec quibble --json comments show $ID
+stdout '"id": "'$ID'"'
+stdout '"status": "open"'
+stdout '"exact": "stable field names"'
+stdout '"author":'
+
+-- docs/d.md --
+# Doc
+
+The JSON output uses stable field names for agents to rely on.

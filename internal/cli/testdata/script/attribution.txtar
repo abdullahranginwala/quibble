@@ -1,0 +1,31 @@
+# attribution: --author flag beats QUIBBLE_AUTHOR env beats config default.
+
+mkdir .git
+exec quibble init
+
+exec quibble comments add --doc docs/d.md --quote 'one two three four five' -m 'seed'
+cp stdout add.out
+readfirst ID add.out qbl-[a-z2-7]+
+
+# 1) flag wins over env.
+env QUIBBLE_AUTHOR=envperson
+exec quibble comments reply $ID -m 'r1' --author flagperson
+env QUIBBLE_AUTHOR=
+
+# 2) env wins over config default.
+env QUIBBLE_AUTHOR=envperson
+exec quibble comments reply $ID -m 'r2'
+env QUIBBLE_AUTHOR=
+
+# 3) config default (authors.human) when neither flag nor env is set.
+exec quibble comments reply $ID -m 'r3'
+
+exec quibble comments show $ID
+stdout 'reply by flagperson'
+stdout 'reply by envperson'
+stdout 'reply by human'
+
+-- docs/d.md --
+# Doc
+
+Line with one two three four five words to anchor.

@@ -1,0 +1,35 @@
+# doctor: deleting the anchored text orphans a thread (exit 3); repin recovers it.
+
+mkdir .git
+exec quibble init
+
+exec quibble comments add --doc docs/d.md --quote 'this exact sentence anchors the thread' -m 'anchor me'
+cp stdout add.out
+readfirst ID add.out qbl-[a-z2-7]+
+
+# Remove the anchored sentence entirely: doctor reports an orphan and exits 3.
+cp d_v2.md docs/d.md
+! exec quibble doctor
+stdout 'orphan'
+
+# Repin to a fresh verbatim quote from the edited doc.
+exec quibble comments repin $ID --quote 'a completely different sentence now'
+stdout 'repinned '$ID
+
+# The thread anchors exactly again; doctor is clean (exit 0).
+exec quibble doctor
+stdout 'exact'
+
+-- docs/d.md --
+# Doc
+
+Intro paragraph stays put.
+
+But this exact sentence anchors the thread for the test.
+
+-- d_v2.md --
+# Doc
+
+Intro paragraph stays put.
+
+Now there is a completely different sentence now in its place.

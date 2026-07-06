@@ -1,0 +1,24 @@
+# resolve policy gate: an agent may not resolve; the thread stays put.
+
+mkdir .git
+exec quibble init
+
+exec quibble comments add --doc docs/d.md --quote 'anchor sentence here' -m 'please review'
+cp stdout add.out
+readfirst ID add.out qbl-[a-z2-7]+
+
+# Resolving as the configured agent is refused (exit != 0) with the policy message.
+env QUIBBLE_AUTHOR=agent
+! exec quibble comments resolve $ID
+stderr 'agents address; humans resolve'
+env QUIBBLE_AUTHOR=
+
+# Status is unchanged: still open, not moved to the resolved archive.
+exec quibble comments list --open
+stdout $ID
+! exists .quibble/comments/_resolved/docs--d
+
+-- docs/d.md --
+# Doc
+
+This is the anchor sentence here for the test.

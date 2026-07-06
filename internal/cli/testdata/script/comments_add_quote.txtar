@@ -1,0 +1,25 @@
+# comments add: verbatim quote works; missing errors; ambiguous errors with a count.
+
+mkdir .git
+exec quibble init
+
+# A verbatim, unique quote anchors successfully.
+exec quibble comments add --doc docs/d.md --quote 'quick brown fox jumps' -m 'note'
+stdout qbl-[a-z2-7]+
+
+# A quote not present in the doc is rejected with guidance.
+! exec quibble comments add --doc docs/d.md --quote 'this text is not there' -m x
+stderr 'quote not found'
+
+# An ambiguous quote (appears twice) is rejected and reports the count.
+! exec quibble comments add --doc docs/d.md --quote 'Alpha beta gamma' -m x
+stderr 'occurs 2 times'
+
+-- docs/d.md --
+# Doc
+
+Alpha beta gamma one.
+
+Alpha beta gamma two.
+
+The quick brown fox jumps over the lazy dog.

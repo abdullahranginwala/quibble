@@ -1,0 +1,44 @@
+# comments: full open -> addressed -> resolved lifecycle via the CLI.
+
+mkdir .git
+exec quibble init
+
+# Add a thread; capture its generated id.
+exec quibble comments add --doc docs/plan.md --quote 're-attempts every thirty minutes' -m 'Is this idempotent?'
+cp stdout add.out
+readfirst ID add.out qbl-[a-z2-7]+
+
+# Default list shows the open thread.
+exec quibble comments list
+stdout $ID
+stdout 'open'
+
+# Agent replies and addresses it.
+exec quibble comments reply $ID -m 'switched to booking-id keying'
+env QUIBBLE_AUTHOR=agent
+exec quibble comments address $ID -m 'done in commit abc123'
+env QUIBBLE_AUTHOR=
+
+# Default list still shows it (addressed is actionable, not hidden).
+exec quibble comments list
+stdout $ID
+stdout 'addressed'
+
+# Human resolves it; the file moves to the resolved archive.
+exec quibble comments resolve $ID
+stdout 'resolved '$ID
+exists .quibble/comments/_resolved/docs--plan
+
+# Default list is now empty; --resolved surfaces the archived thread.
+exec quibble comments list
+stdout 'no matching threads'
+exec quibble comments list --resolved
+stdout $ID
+stdout 'resolved'
+
+-- docs/plan.md --
+# Deployment plan
+
+## Failure modes
+
+The retry loop re-attempts every thirty minutes for six hours.
