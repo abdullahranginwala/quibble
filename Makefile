@@ -18,7 +18,7 @@ fmt:
 	gofmt -w .
 
 gate:
-	@gofmt -l . | (! grep .) || (echo "gofmt: files need formatting" && exit 1)
+	@out="$$(gofmt -l .)"; if [ -n "$$out" ]; then echo "$$out"; echo "gofmt: files need formatting"; exit 1; fi
 	go vet ./...
 	go build ./...
 	go test ./... -race

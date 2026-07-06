@@ -16,7 +16,10 @@ jobs:
         with:
           go-version-file: go.mod
       - name: gofmt
-        run: gofmt -l . | (! grep .)
+        # `(! grep .)` breaks on macOS bash 3.2 (negation bug) — keep this portable.
+        run: |
+          out=$(gofmt -l .)
+          if [ -n "$out" ]; then printf '%s\n' "$out" "gofmt: files need formatting"; exit 1; fi
       - name: vet
         run: go vet ./...
       - name: build

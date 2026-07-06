@@ -14,7 +14,9 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-      - run: gofmt -l . | (! grep .)
+      - run: |
+          out=$(gofmt -l .)
+          if [ -n "$out" ]; then printf '%s\n' "$out" "gofmt: files need formatting"; exit 1; fi
       - run: go vet ./...
       - run: go build ./...
       - run: go test ./... -race
