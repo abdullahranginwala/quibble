@@ -31,7 +31,7 @@
 ## Gate (run before every commit; CI enforces on push)
 
 ```sh
-gofmt -l . | (! grep .)   # no unformatted files
+test -z "$(gofmt -l .)"   # no unformatted files (portable; ! grep breaks on bash 3.2)
 go vet ./...
 go build ./...
 go test ./... -race
