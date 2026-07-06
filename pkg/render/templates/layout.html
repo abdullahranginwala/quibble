@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{if .DocTitle}}{{.DocTitle}} &middot; {{end}}{{.SiteTitle}}</title>
+<script>
+(function () {
+  try {
+    var s = localStorage.getItem("qbl-scheme");
+    if (s === "dark" || s === "light") {
+      document.documentElement.setAttribute("data-qbl-scheme", s);
+    }
+  } catch (e) {}
+})();
+</script>
+<link rel="stylesheet" href="{{.AssetPrefix}}tokens.css">
+<link rel="stylesheet" href="{{.AssetPrefix}}chroma.css">
+<link rel="stylesheet" href="{{.AssetPrefix}}theme.css">
+<link rel="stylesheet" href="{{.AssetPrefix}}quibble.css">
+{{.Overrides}}
+</head>
+<body>
+<header class="qbl-header">
+  <div class="qbl-header-inner">
+    <a class="qbl-site" href="index.html">{{.SiteTitle}}</a>
+    <button class="qbl-toggle" type="button" aria-label="Toggle color scheme" title="Toggle light / dark">&#9680;</button>
+  </div>
+</header>
+<div class="qbl-layout{{if .TOC}} qbl-has-toc{{end}}">
+  {{if .TOC}}
+  <nav class="qbl-toc" aria-label="Table of contents">
+    <div class="qbl-toc-title">On this page</div>
+    <ul>
+      {{range .Outline}}<li class="qbl-toc-l{{.Level}}"><a href="#{{.Anchor}}">{{.Text}}</a></li>
+      {{end}}
+    </ul>
+  </nav>
+  {{end}}
+  <main class="qbl-main">
+    <article class="qbl-prose">
+{{.Body}}
+    </article>
+  </main>
+</div>
+<footer class="qbl-footer">Rendered by quibble.</footer>
+<div id="qbl-comments-root"></div>
+<script type="module" src="{{.AssetPrefix}}comments.js"></script>
+<script>
+(function () {
+  var toggle = document.querySelector(".qbl-toggle");
+  if (toggle) {
+    toggle.addEventListener("click", function () {
+      var el = document.documentElement;
+      var cur = el.getAttribute("data-qbl-scheme");
+      var sysDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      var next = cur ? (cur === "dark" ? "light" : "dark") : (sysDark ? "light" : "dark");
+      el.setAttribute("data-qbl-scheme", next);
+      try { localStorage.setItem("qbl-scheme", next); } catch (e) {}
+    });
+  }
+  document.querySelectorAll(".qbl-copy").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var code = btn.parentElement.querySelector("pre code");
+      if (!code) return;
+      if (navigator.clipboard) { navigator.clipboard.writeText(code.innerText); }
+      btn.textContent = "Copied";
+      setTimeout(function () { btn.textContent = "Copy"; }, 1200);
+    });
+  });
+})();
+</script>
+</body>
+</html>

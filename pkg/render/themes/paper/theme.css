@@ -1,0 +1,178 @@
+/*
+ * paper — editorial styling built on the token contract.
+ *
+ * The goal is a well-set book page: a single measured column of serif prose,
+ * generous vertical rhythm, restrained colour, understated rules.
+ */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--qbl-bg);
+  color: var(--qbl-fg);
+  font-family: var(--qbl-font-body);
+  font-size: 19px;
+  line-height: 1.65;
+  font-feature-settings: "kern", "liga", "onum";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- prose column --------------------------------------------------------- */
+
+.qbl-prose {
+  max-width: var(--qbl-prose-max);
+  margin: 0 auto;
+  padding: 1rem 0 5rem;
+}
+
+.qbl-prose > * {
+  margin-block: 0 1.15em;
+}
+
+.qbl-prose > :first-child {
+  margin-top: 0;
+}
+
+.qbl-prose p {
+  hyphens: auto;
+}
+
+/* --- headings ------------------------------------------------------------- */
+
+.qbl-prose h1,
+.qbl-prose h2,
+.qbl-prose h3,
+.qbl-prose h4,
+.qbl-prose h5,
+.qbl-prose h6 {
+  font-family: var(--qbl-font-heading);
+  font-weight: 650;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 2.1em 0 0.6em;
+  scroll-margin-top: 5rem;
+}
+
+.qbl-prose > h1:first-child,
+.qbl-prose > h2:first-child {
+  margin-top: 0;
+}
+
+.qbl-prose h1 {
+  font-size: 2.35em;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 0.7em;
+}
+
+.qbl-prose h2 {
+  font-size: 1.6em;
+  padding-bottom: 0.25em;
+  border-bottom: 1px solid var(--qbl-border);
+}
+
+.qbl-prose h3 { font-size: 1.28em; }
+.qbl-prose h4 { font-size: 1.08em; }
+.qbl-prose h5 { font-size: 1em; }
+.qbl-prose h6 { font-size: 0.92em; color: var(--qbl-fg-muted); }
+
+/* --- links ---------------------------------------------------------------- */
+
+.qbl-prose a {
+  color: var(--qbl-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  text-decoration-color: color-mix(in srgb, var(--qbl-accent) 40%, transparent);
+}
+
+.qbl-prose a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* --- inline marks --------------------------------------------------------- */
+
+.qbl-prose strong { font-weight: 700; }
+.qbl-prose em { font-style: italic; }
+
+.qbl-prose del {
+  color: var(--qbl-fg-muted);
+}
+
+.qbl-prose code {
+  font-family: var(--qbl-font-mono);
+  font-size: 0.86em;
+  background: var(--qbl-bg-raised);
+  padding: 0.15em 0.36em;
+  border-radius: 4px;
+  border: 1px solid var(--qbl-border);
+}
+
+.qbl-prose pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* --- blockquotes ---------------------------------------------------------- */
+
+.qbl-prose blockquote {
+  margin: 1.6em 0;
+  padding: 0.2em 0 0.2em 1.3em;
+  border-left: 3px solid var(--qbl-accent);
+  color: var(--qbl-fg-muted);
+  font-style: italic;
+}
+
+.qbl-prose blockquote p:last-child { margin-bottom: 0; }
+
+/* --- lists ---------------------------------------------------------------- */
+
+.qbl-prose ul,
+.qbl-prose ol {
+  padding-left: 1.5em;
+}
+
+.qbl-prose li { margin-bottom: 0.35em; }
+.qbl-prose li > ul,
+.qbl-prose li > ol { margin: 0.35em 0 0.35em; }
+
+.qbl-prose li > input[type="checkbox"] {
+  margin-right: 0.5em;
+  accent-color: var(--qbl-accent);
+}
+
+.qbl-prose ul:has(> li > input[type="checkbox"]) {
+  list-style: none;
+  padding-left: 0.2em;
+}
+
+/* --- rules & media -------------------------------------------------------- */
+
+.qbl-prose hr {
+  border: none;
+  border-top: 1px solid var(--qbl-border);
+  margin: 3em 0;
+}
+
+.qbl-prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--qbl-radius);
+}
+
+/* --- footnotes ------------------------------------------------------------ */
+
+.qbl-prose .footnotes {
+  margin-top: 3em;
+  padding-top: 1.2em;
+  border-top: 1px solid var(--qbl-border);
+  font-size: 0.9em;
+  color: var(--qbl-fg-muted);
+}

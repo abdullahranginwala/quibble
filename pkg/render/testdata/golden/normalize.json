@@ -1,0 +1,41 @@
+{
+  "text": "Heading With Spaces\nA paragraph with runs of whitespace and a soft-wrapped line.\nfirst list item\nsecond list item\nfunc main() { println(\"multi\") println(\"line\") }\nTrailing paragraph.",
+  "blocks": [
+    {
+      "ID": "1907e237a0-0",
+      "Text": "Heading With Spaces",
+      "Start": 0,
+      "End": 19
+    },
+    {
+      "ID": "cb0605b072-0",
+      "Text": "A paragraph with runs of whitespace and a soft-wrapped line.",
+      "Start": 20,
+      "End": 80
+    },
+    {
+      "ID": "072db6de1b-0",
+      "Text": "first list item",
+      "Start": 81,
+      "End": 96
+    },
+    {
+      "ID": "8c22010a1c-0",
+      "Text": "second list item",
+      "Start": 97,
+      "End": 113
+    },
+    {
+      "ID": "4ac591d5dd-0",
+      "Text": "func main() { println(\"multi\") println(\"line\") }",
+      "Start": 114,
+      "End": 162
+    },
+    {
+      "ID": "7502a6c309-0",
+      "Text": "Trailing paragraph.",
+      "Start": 163,
+      "End": 182
+    }
+  ]
+}

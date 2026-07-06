@@ -1,0 +1,273 @@
+/*
+ * quibble structural chrome — theme-independent.
+ *
+ * Header, table-of-contents sidebar, code blocks, tables, comment marks and
+ * mount points. Everything here styles itself from the token contract, so it
+ * matches any theme automatically.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* --- header --------------------------------------------------------------- */
+
+.qbl-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in srgb, var(--qbl-bg) 88%, transparent);
+  backdrop-filter: saturate(1.2) blur(8px);
+  border-bottom: 1px solid var(--qbl-border);
+}
+
+.qbl-header-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0.7rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.qbl-site {
+  font-family: var(--qbl-font-heading);
+  font-weight: 650;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  color: var(--qbl-fg);
+  text-decoration: none;
+}
+
+.qbl-toggle {
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--qbl-fg-muted);
+  background: transparent;
+  border: 1px solid var(--qbl-border);
+  border-radius: var(--qbl-radius);
+  padding: 0.3rem 0.55rem;
+  cursor: pointer;
+}
+
+.qbl-toggle:hover {
+  color: var(--qbl-fg);
+  border-color: var(--qbl-fg-muted);
+}
+
+/* --- layout --------------------------------------------------------------- */
+
+.qbl-layout {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.qbl-layout.qbl-has-toc {
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 15rem);
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.qbl-main {
+  min-width: 0;
+  grid-row: 1;
+  grid-column: 1;
+}
+
+/* --- table of contents ---------------------------------------------------- */
+
+.qbl-toc {
+  grid-row: 1;
+  grid-column: 2;
+  position: sticky;
+  top: 4.5rem;
+  align-self: start;
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+  font-size: 0.86rem;
+  line-height: 1.4;
+  padding: 1.5rem 0;
+}
+
+.qbl-toc-title {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.72rem;
+  color: var(--qbl-fg-muted);
+  margin-bottom: 0.6rem;
+}
+
+.qbl-toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 1px solid var(--qbl-border);
+}
+
+.qbl-toc li { margin: 0; }
+
+.qbl-toc a {
+  display: block;
+  padding: 0.2rem 0 0.2rem 0.9rem;
+  margin-left: -1px;
+  border-left: 1px solid transparent;
+  color: var(--qbl-fg-muted);
+  text-decoration: none;
+}
+
+.qbl-toc a:hover {
+  color: var(--qbl-accent);
+  border-left-color: var(--qbl-accent);
+}
+
+.qbl-toc-l1 { display: none; }
+.qbl-toc-l3 a { padding-left: 1.8rem; }
+.qbl-toc-l4 a { padding-left: 2.7rem; }
+.qbl-toc-l5 a,
+.qbl-toc-l6 a { padding-left: 3.4rem; }
+
+@media (max-width: 950px) {
+  .qbl-layout.qbl-has-toc {
+    grid-template-columns: 1fr;
+  }
+  .qbl-toc { display: none; }
+}
+
+/* --- heading anchor links ------------------------------------------------- */
+
+.qbl-anchor {
+  margin-left: 0.35em;
+  color: var(--qbl-fg-muted);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.12s ease-in-out;
+}
+
+h1:hover > .qbl-anchor,
+h2:hover > .qbl-anchor,
+h3:hover > .qbl-anchor,
+h4:hover > .qbl-anchor,
+h5:hover > .qbl-anchor,
+h6:hover > .qbl-anchor {
+  opacity: 1;
+}
+
+.qbl-anchor:hover { color: var(--qbl-accent); }
+
+/* --- code blocks ---------------------------------------------------------- */
+
+.qbl-code {
+  position: relative;
+  margin: 1.5em 0;
+}
+
+.qbl-code pre.chroma {
+  overflow-x: auto;
+  padding: 1rem 1.1rem;
+  border-radius: var(--qbl-radius);
+  border: 1px solid var(--qbl-border);
+  font-family: var(--qbl-font-mono);
+  font-size: 0.83rem;
+  line-height: 1.55;
+  tab-size: 4;
+}
+
+.qbl-copy {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--qbl-fg-muted);
+  background: var(--qbl-bg);
+  border: 1px solid var(--qbl-border);
+  border-radius: 5px;
+  padding: 0.15rem 0.5rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s ease-in-out;
+}
+
+.qbl-code:hover .qbl-copy { opacity: 1; }
+.qbl-copy:hover { color: var(--qbl-fg); border-color: var(--qbl-fg-muted); }
+
+/* --- tables --------------------------------------------------------------- */
+
+.qbl-prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.92em;
+  margin: 1.6em 0;
+}
+
+.qbl-prose th,
+.qbl-prose td {
+  padding: 0.5em 0.85em;
+  border: 1px solid var(--qbl-border);
+  text-align: left;
+}
+
+.qbl-prose thead th {
+  background: var(--qbl-bg-raised);
+  font-weight: 650;
+}
+
+/* --- index page ----------------------------------------------------------- */
+
+.qbl-index {
+  list-style: none;
+  padding: 0;
+}
+
+.qbl-index li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--qbl-border);
+}
+
+.qbl-index a {
+  color: var(--qbl-accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.qbl-index a:hover { text-decoration: underline; }
+
+.qbl-index-path {
+  color: var(--qbl-fg-muted);
+  font-size: 0.85em;
+  margin-left: 0.5rem;
+}
+
+/* --- footer --------------------------------------------------------------- */
+
+.qbl-footer {
+  max-width: 1180px;
+  margin: 3rem auto 0;
+  padding: 1.5rem;
+  border-top: 1px solid var(--qbl-border);
+  color: var(--qbl-fg-muted);
+  font-size: 0.85rem;
+}
+
+/* --- comment layer (populated by the review UI in a later milestone) ------ */
+
+.qbl-mark {
+  background: var(--qbl-mark-bg);
+  border-radius: 3px;
+  box-decoration-break: clone;
+  cursor: pointer;
+}
+
+.qbl-mark.qbl-mark-active {
+  background: var(--qbl-mark-bg-active);
+}
+
+#qbl-comments-root:empty {
+  display: none;
+}

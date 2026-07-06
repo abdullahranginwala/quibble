@@ -1,0 +1,58 @@
+/*
+ * paper — design-token contract.
+ *
+ * Every token in quibble's vocabulary is defined for both schemes. The chrome
+ * and comment layer read only these variables, so they always match the theme.
+ */
+
+:root {
+  --qbl-bg: #fbfaf7;
+  --qbl-bg-raised: #f3f0e9;
+  --qbl-fg: #1c1b19;
+  --qbl-fg-muted: #6b6862;
+  --qbl-accent: #1a4fd6;
+  --qbl-border: #e4dfd4;
+  --qbl-prose-max: 68ch;
+  --qbl-font-body: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, "Times New Roman", serif;
+  --qbl-font-heading: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, "Times New Roman", serif;
+  --qbl-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --qbl-radius: 6px;
+  --qbl-mark-bg: rgba(26, 79, 214, 0.14);
+  --qbl-mark-bg-active: rgba(26, 79, 214, 0.28);
+  --qbl-comment-bg: #ffffff;
+  --qbl-comment-border: #e4dfd4;
+}
+
+[data-qbl-scheme="dark"] {
+  --qbl-bg: #14131a;
+  --qbl-bg-raised: #1e1d26;
+  --qbl-fg: #e8e5dd;
+  --qbl-fg-muted: #9c988e;
+  --qbl-accent: #7da2ff;
+  --qbl-border: #2c2b35;
+  --qbl-prose-max: 68ch;
+  --qbl-font-body: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, "Times New Roman", serif;
+  --qbl-font-heading: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, "Times New Roman", serif;
+  --qbl-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --qbl-radius: 6px;
+  --qbl-mark-bg: rgba(125, 162, 255, 0.18);
+  --qbl-mark-bg-active: rgba(125, 162, 255, 0.34);
+  --qbl-comment-bg: #1e1d26;
+  --qbl-comment-border: #2c2b35;
+}
+
+/* Follow the OS preference when the reader has not chosen a scheme manually. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-qbl-scheme="light"]) {
+    --qbl-bg: #14131a;
+    --qbl-bg-raised: #1e1d26;
+    --qbl-fg: #e8e5dd;
+    --qbl-fg-muted: #9c988e;
+    --qbl-accent: #7da2ff;
+    --qbl-border: #2c2b35;
+    --qbl-mark-bg: rgba(125, 162, 255, 0.18);
+    --qbl-mark-bg-active: rgba(125, 162, 255, 0.34);
+    --qbl-comment-bg: #1e1d26;
+    --qbl-comment-border: #2c2b35;
+  }
+}
