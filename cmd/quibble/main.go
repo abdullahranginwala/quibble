@@ -3,11 +3,11 @@
 package main
 
 import (
-	"fmt"
 	"os"
+
+	"github.com/abdullahranginwala/quibble/internal/cli"
 )
 
 func main() {
-	fmt.Fprintln(os.Stderr, "quibble: design phase — see DESIGN.md for the plan")
-	os.Exit(1)
+	os.Exit(cli.Execute())
 }
