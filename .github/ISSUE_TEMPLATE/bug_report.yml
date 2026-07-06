@@ -1,0 +1,35 @@
+name: Bug report
+description: Something misbehaves
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: quibble version
+      description: Output of `quibble version`
+      placeholder: quibble v0.1.0 (abc1234)
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Smallest repo/doc/commands that show the problem. For anchoring bugs, include the doc text and the thread file's anchor block.
+      placeholder: |
+        1. quibble init
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs actual
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [rendering/themes, anchoring/doctor, comments CLI, serve/web UI, store/files, other]
+    validations:
+      required: true

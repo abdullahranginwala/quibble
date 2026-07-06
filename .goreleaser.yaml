@@ -1,0 +1,36 @@
+version: 2
+
+project_name: quibble
+
+builds:
+  - main: ./cmd/quibble
+    binary: quibble
+    env: [CGO_ENABLED=0]
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    ldflags:
+      - -s -w
+      - -X github.com/abdullahranginwala/quibble/internal/cli.version={{.Version}}
+      - -X github.com/abdullahranginwala/quibble/internal/cli.commit={{.ShortCommit}}
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files: [LICENSE, README.md]
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  use: github
+  filters:
+    exclude:
+      - "^docs:"
+      - "^chore:"
+
+release:
+  footer: |
+    ---
+    Install from source: `go install github.com/abdullahranginwala/quibble/cmd/quibble@{{.Tag}}`
