@@ -26,3 +26,7 @@ jobs:
         run: go build ./...
       - name: test
         run: go test ./... -race
+      - name: browser e2e (must not skip)
+        env:
+          QBL_REQUIRE_BROWSER: "1"
+        run: go test ./internal/server -race -count=1 -run TestBrowserSelectCommentFlow -v

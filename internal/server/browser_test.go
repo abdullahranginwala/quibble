@@ -28,6 +28,12 @@ import (
 func TestBrowserSelectCommentFlow(t *testing.T) {
 	chrome := findChrome()
 	if chrome == "" {
+		// QBL_REQUIRE_BROWSER (set in CI) turns a missing browser into a
+		// failure: a silent skip on runners means silently losing the only
+		// coverage of the real selection→comment interaction.
+		if os.Getenv("QBL_REQUIRE_BROWSER") != "" {
+			t.Fatal("QBL_REQUIRE_BROWSER is set but no Chrome/Chromium was found")
+		}
 		t.Skip("no Chrome/Chromium found; skipping browser e2e")
 	}
 
