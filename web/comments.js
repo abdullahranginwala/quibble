@@ -198,7 +198,11 @@ function renderResolvedList() {
 
 // --- selection → new comment ---
 
-function onSelect() {
+function onSelect(e) {
+  // A click on the float button fires document-level mouseup first; removing
+  // and re-creating the button here would detach it before its click event is
+  // delivered, so the panel would never open.
+  if (e && e.target instanceof Element && e.target.closest(".qbl-float")) return;
   removeFloat();
   const sel = window.getSelection();
   if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
@@ -217,12 +221,21 @@ function onSelect() {
   const r = range.getBoundingClientRect();
   btn.style.top = `${window.scrollY + r.bottom + 6}px`;
   btn.style.left = `${window.scrollX + r.left}px`;
-  btn.addEventListener("mousedown", (e) => e.preventDefault());
-  btn.addEventListener("click", () => {
+  // Open on pointerdown, not click: a click's own mouseup bubbles to the
+  // document-level onSelect listener, and any code path that removes the
+  // button there detaches it before the browser would dispatch its click —
+  // the panel would silently never open (the v0.1.0 bug). pointerdown fires
+  // before mouseup, so the panel is open before any selection handling runs;
+  // preventDefault also keeps the text selection alive.
+  const open = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     removeFloat();
     state.draft = { blockId: startBlock.dataset.qbl, ...offsets };
     openNewCommentPanel();
-  });
+  };
+  btn.addEventListener("pointerdown", open);
+  btn.addEventListener("click", open); // keyboard activation fallback
   document.body.appendChild(btn);
 }
 
